@@ -206,7 +206,6 @@ f:SetScript("OnEvent", function()
 		ReloadUI()
 	end)
 end)
-
 ----------------------------------------------------
 -- Config Frame
 -- Panel
@@ -240,6 +239,16 @@ local function Main_DynamicKillAnnouncer()
 	-- OnClick Function
 	SilenceKillAnnouncer_CheckButton:SetScript("OnClick", function(self)
 	AbyssUIAddonSettings.SilenceKillAnnouncer = self:GetChecked()
+	end)
+	-- PvE Kill Announcer --
+	local PVEKillAnnouncer_CheckButton = CreateFrame("CheckButton", "$parentPVEKillAnnouncer_CheckButton", DynamicKillAnnouncer_Config.panel, "ChatConfigCheckButtonTemplate")
+	PVEKillAnnouncer_CheckButton:SetPoint("TOPLEFT", 10, -140)
+	PVEKillAnnouncer_CheckButton.Text:SetText("PVE Kill Announcer")
+	PVEKillAnnouncer_CheckButton.tooltip = "Will work on pve kills also"
+	PVEKillAnnouncer_CheckButton:SetChecked(AbyssUIAddonSettings.PVEKillAnnouncer)
+	-- OnClick Function
+	PVEKillAnnouncer_CheckButton:SetScript("OnClick", function(self)
+	AbyssUIAddonSettings.PVEKillAnnouncer = self:GetChecked()
 	end)
 	----------------------------------------------------
 	-- Kill Frame
@@ -390,6 +399,46 @@ local function Main_DynamicKillAnnouncer()
 		  		if (prefixParam2 ~= nil) then
 					if (sourceName == name) then
 						if (string.find(destGUID, "Player")) then
+							DynamicKillAnnouncerFrame:Hide()
+							DynamicKillAnnouncerFrame.text:SetText("|cfff2f2f2"..destName.."|r")
+							if (AbyssUIAddonSettings.SilenceKillAnnouncer ~= true) then
+								PlaySoundRandom()
+							end
+							UIFrameFadeIn(DynamicKillAnnouncerFrame, 4, 1, 0)
+						end
+			  		end
+			  	end
+		    else
+		    	return nil
+		    end
+		else
+			return nil
+		end
+	end)
+	-- PVEKillAnnouncer Announcer
+	local PVEKillAnnouncer = CreateFrame("FRAME", "$parentPVEKillAnouncer")
+	local name = GetUnitName("player")
+	PVEKillAnnouncer:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	PVEKillAnnouncer:SetScript("OnEvent", function(self)
+		if (AbyssUIAddonSettings.PVEKillAnnouncer == true) then
+		    local timeStamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, prefixParam1, prefixParam2, dummyparam, suffixParam1, suffixParam2 = CombatLogGetCurrentEventInfo()
+		    if (event == "SPELL_DAMAGE" or event == "SPELL_PERIODIC_DAMAGE" or event == "RANGE_DAMAGE") and suffixParam2 > 0 then
+				if (suffixParam2 ~= nil) then
+					if (sourceName == name) then
+						if (not string.find(destGUID, "Player")) then
+							DynamicKillAnnouncerFrame:Hide()
+							DynamicKillAnnouncerFrame.text:SetText("|cfff2f2f2"..destName.."|r")
+							if (AbyssUIAddonSettings.SilenceKillAnnouncer ~= true) then
+								PlaySoundRandom()
+							end
+							UIFrameFadeIn(DynamicKillAnnouncerFrame, 4, 1, 0)
+						end
+			  		end
+			  	end
+		  	elseif (event == "SWING_DAMAGE") and prefixParam2 > 0 then
+		  		if (prefixParam2 ~= nil) then
+					if (sourceName == name) then
+						if (not string.find(destGUID, "Player")) then
 							DynamicKillAnnouncerFrame:Hide()
 							DynamicKillAnnouncerFrame.text:SetText("|cfff2f2f2"..destName.."|r")
 							if (AbyssUIAddonSettings.SilenceKillAnnouncer ~= true) then
