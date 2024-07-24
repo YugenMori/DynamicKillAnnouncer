@@ -214,7 +214,13 @@ local function InitSettings()
   -- Set the name for the Category for the Options Panel1
   DynamicKillAnnouncer_Config.panel.name = "DynamicKillAnnouncer"
   -- Add the panel to the Interface Options
-  InterfaceOptions_AddCategory(DynamicKillAnnouncer_Config.panel, addonName)
+  -- Add the panel to the Interface Options
+  if InterfaceOptions_AddCategory then
+    InterfaceOptions_AddCategory(DynamicKillAnnouncer_Config.panel, addonName)
+  else
+    local category = Settings.RegisterCanvasLayoutCategory(DynamicKillAnnouncer_Config.panel, DynamicKillAnnouncer_Config.panel.name)
+    Settings.RegisterAddOnCategory(category)
+  end
 end
 -- Options
 local function Main_DynamicKillAnnouncer()
