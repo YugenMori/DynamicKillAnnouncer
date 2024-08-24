@@ -1,6 +1,6 @@
 ## Interface: 30403
 ## Title: Dynamic|cffC70000KillAnnouncer|r
-## Version: 11.0.0.1_Classic_TWW
+## Version: 11.0.2.1_Classic_TWW
 ## Author: Yugen
 ## Notes-deDE: Ein dynamischer Kill-Ansager für World of Warcraft
 ## Notes-enGB: A Dynamic Kill Announcer for World of Warcraft
